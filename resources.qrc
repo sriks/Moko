@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Moko/AppList.qml</file>
+        <file>qml/Moko/main.qml</file>
+        <file>qml/Moko/AppWebView.qml</file>
+        <file>qml/Moko/MokoUtils.js</file>
+    </qresource>
+</RCC>
