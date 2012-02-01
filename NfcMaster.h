@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QNearFieldTarget>
+#include <QLlcpSocket>
 
 QTM_USE_NAMESPACE
 
@@ -20,6 +21,8 @@ public slots:
     void start(QVariant msgToWrite);
     void onTargetDetected(QNearFieldTarget* target);
     void onTargetLost(QNearFieldTarget* target);
+    void onSocketError(QLlcpSocket::SocketError socketError);
+    void onSocketConnected();
 private:
     NfcMasterPrivate* d;
 };

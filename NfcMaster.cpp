@@ -2,13 +2,16 @@
 #include <QNearFieldTarget>
 #include <QNdefNfcUriRecord>
 #include <QNdefMessage>
+#include <QLlcpSocket>
 #include <QDebug>
 #include <QVariant>
 #include <QUrl>
 #include "NfcMaster.h"
+//"urn:nfc:xsn:nokia.com:moko";
 
 struct NfcMasterPrivate {
    QNearFieldManager* nfcMgr;
+   QLlcpSocket* nfcSocket;
    QVariant msg;
 };
 
@@ -16,6 +19,7 @@ NfcMaster::NfcMaster(QObject *parent) :
     QObject(parent) {
     d = new NfcMasterPrivate;
     d->nfcMgr = NULL;
+    d->nfcSocket = new QLlcpSocket(this);
 }
 
 NfcMaster::~NfcMaster() {
@@ -37,29 +41,37 @@ void NfcMaster::start(QVariant msgToWrite) {
                 Qt::UniqueConnection);
     }
     bool started = d->nfcMgr->startTargetDetection();
-    qDebug()<<Q_FUNC_INFO<<" target request is "+started;
+    Q_UNUSED(started)
 }
 
 void NfcMaster::onTargetDetected(QNearFieldTarget *target) {
     qDebug()<<Q_FUNC_INFO;
-//    qDebug()<<Q_FUNC_INFO<<"supported accessmethods:"<<target->accessMethods();
-//    qDebug()<<Q_FUNC_INFO<<"target url:"<<target->url();
-//    target->sendCommand("www.google.com");
-    QUrl url = QUrl::fromUserInput(QString("www.google.com"));
-    if(url.isValid())
-        qDebug()<<Q_FUNC_INFO<<" url is valid";
-    QNdefMessage msg;
-    QNdefNfcUriRecord rec;
-    rec.setUri(url);
-    msg.append(rec);
-    qDebug()<<Q_FUNC_INFO<<" msg is: "<<msg.toByteArray();
-    QNearFieldTarget::RequestId id = target->writeNdefMessages(QList<QNdefMessage>()<<msg);
+    qDebug()<<Q_FUNC_INFO<<"supported accessmethods:"<<target->accessMethods();
+    QNearFieldTarget::RequestId id = target->sendCommand("/usr/bin/gallery");
     qDebug()<<"req id is valid "<<id.isValid();
+    // Send url to peer nfc device is not working :(
+//    QUrl url = QUrl::fromUserInput(QString("www.google.com"));
+//    if(url.isValid())
+//        qDebug()<<Q_FUNC_INFO<<" url is valid";
+//    QNdefMessage msg;
+//    QNdefNfcUriRecord rec;
+//    rec.setUri(url);
+//    msg.append(rec);
+//    QNearFieldTarget::RequestId id = target->writeNdefMessages(QList<QNdefMessage>()<<msg);
+//    qDebug()<<"req id is valid "<<id.isValid();
 }
 
 void NfcMaster::onTargetLost(QNearFieldTarget *target) {
     qDebug()<<Q_FUNC_INFO;
     target->deleteLater();
+}
+
+void NfcMaster::onSocketError(QLlcpSocket::SocketError socketError) {
+    qDebug()<<Q_FUNC_INFO<<socketError;
+}
+
+void NfcMaster::onSocketConnected() {
+    qDebug()<<Q_FUNC_INFO;
 }
 
 

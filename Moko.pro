@@ -48,7 +48,7 @@ OTHER_FILES += \
     qml/Moko/MokoUtils.js
 
 
-include (../rsssuite/feedparrot.pri)
+include (../feedparrot/feedparrot.pri)
 
 RESOURCES += \
     resources.qrc
