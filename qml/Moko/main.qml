@@ -5,11 +5,11 @@ import "MokoUtils.js" as MokoUtils
 
 PageStackWindow {
     // engine is injected as a context property
+    // shareui is injected as a context property to launch share ui
     id: appWindow
     property Page appListPage;
     Component.onCompleted: {
         MokoUtils._root = appWindow;
-        console.debug("root is "+MokoUtils.root());
         showAppList();
     }
 
@@ -36,8 +36,8 @@ PageStackWindow {
         }
 
         ToolIcon {
-            platformIconId: "toolbar-refresh";
-            onClicked: if(appListPage) appListPage.startUpdate();
+            platformIconId: (visible && appListPage.loading)?("toolbar-stop"):("toolbar-refresh");
+            onClicked: (visible && appListPage.loading)?(appListPage.stopUpdate()):(appListPage.startUpdate());
             visible: (appListPage)?(true):(false);
         }
 
@@ -53,6 +53,11 @@ PageStackWindow {
         visualParent: pageStack
         MenuLayout {
             MenuItem {
+                text: qsTr("my-meego.com")
+                onClicked: Qt.openUrlExternally("http://my-meego.com/software/")
+            }
+
+            MenuItem {
                 text: qsTr("About")
                 onClicked: about.open();
             }
@@ -62,7 +67,7 @@ PageStackWindow {
     QueryDialog {
         id: about
         titleText: "Moko";
-        message: "Conceptualized and developed at Dreamcode DeviceWorks, 2012.\nContent courtesy my-meego.com.\nIcon courtesy openclipart.com"
+        message: "Conceptualized and developed at Dreamcode, 2012.\nContent courtesy my-meego.com."
         acceptButtonText: "OK";
         onAccepted: about.close();
     }

@@ -5,10 +5,11 @@ import "MokoUtils.js" as MokoUtils
 
 Page {
     id: appList;
-    property string name: "applist" // TOSO: define in JS
+    property string name: "applist"
     property QtObject engine;
     property QtObject parser;
     property bool loading;
+    property int count:0;
     property string url: "http://my-meego.com/downloads/harmattan_downloads.xml";
     tools: commonTools
 
@@ -21,7 +22,13 @@ Page {
 
     function startUpdate() {
         appList.loading = true;
+        error.clear();
         engine.updateAll();
+    }
+
+    function stopUpdate() {
+        appList.loading = false;
+        engine.stopAll();
     }
 
     Connections {
@@ -31,22 +38,22 @@ Page {
             if(parser)
                 parser.destroy(); // delete prev parser instance as we have its ownership.
 
-            // This crates a new parser and ownership is transferred.
+            // This creates a new parser and ownership is transferred.
             // But do not delete it, and keep it alive unless a new request is initiated
             // because delegates will use it.
             parser = engine.parser(url);
-            var count = parser.count();
-            console.debug("pcount is :"+count);
-            header.count = count;
-            appListView.model = count;
-            console.debug("model finished");
+            appList.count = parser.count();
+            header.count = appList.count;
+            appListView.model = appList.count;
         }
 
         onError: {
             appList.loading = false;
             console.debug("error:"+errorDescription);
-            error.text = errorDescription;
-            error.visible = true;
+            if(0 === appList.count) {
+                error.text = errorDescription;
+                error.visible = true;
+            }
         }
     }
 
@@ -54,11 +61,10 @@ Page {
         id: error
         width: parent.width;
         visible: false;
-        anchors {
-            verticalCenter: parent.verticalCenter;
-            left: parent.left;
-            right: parent.right;
-            margins: 15;
+        anchors.centerIn: parent;
+        function clear() {
+            text = "";
+            visible = false;
         }
     }
 
@@ -66,7 +72,7 @@ Page {
         id: header;
         property alias count: count.text;
         height: 73;
-        color: "#cc8800";
+        color: "#cc5500";
 
         anchors {
             top: parent.top;
@@ -92,7 +98,7 @@ Page {
 
         Label {
             id: headerSubTitle;
-            text: "Today's N9 apps from my-meego.com";
+            text: "Today's apps from my-meego.com";
             smooth: true;
             anchors {
                 left: parent.left;
@@ -129,7 +135,6 @@ Page {
                 rightMargin: 15;
                 verticalCenter: parent.verticalCenter;
             }
-            onClicked: startUpdate();
         }
     }
 
@@ -138,6 +143,7 @@ Page {
         clip: true;
         delegate: appInfoDelegate;
         spacing: 10;
+        cacheBuffer: 1000;
         anchors {
             top: header.bottom;
             topMargin: 5;
@@ -147,34 +153,33 @@ Page {
         }
     }
 
+    ScrollDecorator {
+        flickableItem: appListView;
+    }
+
     Component {
         id: appInfoDelegate;
 
         Column {
             id: appInfo;
-            property bool expand;
-            spacing: 10;
-            onExpandChanged: {
-                description.elide = (expand)?(Text.ElideNone):(Text.ElideRight);
-                description.maximumLineCount = (expand)?(10):(4);
-            }
+            property bool expand: false;
+            property string contentColor: "#333333"; // dark grey
+            spacing: 5;
             anchors {
-                topMargin: 5;
+                topMargin: 4;
                 left: parent.left
-                leftMargin: 10
+                leftMargin: 15
                 right: parent.right
-                rightMargin: 10;
+                rightMargin: 15;
             }
 
             Label {
                 id: title;
-                text: parser.itemElement(index,"title");
+                text: parser.decodeHtml(parser.itemElement(index,"title"));
                 width: parent.width;
                 wrapMode: Text.WordWrap;
                 smooth: true;
-                font {
-                    bold: true;
-                }
+                font { bold: true; }
                 MouseArea {
                     anchors.fill: parent;
                     onClicked: expand = (expand)?(false):(true);
@@ -186,13 +191,11 @@ Page {
                 text: parser.itemElement(index,"description");
                 width: parent.width;
                 wrapMode: Text.WordWrap;
-                elide: Text.ElideRight
-                maximumLineCount: 4;
+                elide: (appInfo.expand)?(Text.ElideNone):(Text.ElideRight);
+                maximumLineCount: (appInfo.expand)?(15):(3);
                 smooth: true;
-                font {
-                    pointSize: title.font.pointSize - 2;
-                }
-
+                color: appInfo.contentColor;
+                font { pointSize: title.font.pointSize - 2;}
                 MouseArea {
                     anchors.fill: parent;
                     onClicked: expand = (expand)?(false):(true);
@@ -203,29 +206,49 @@ Page {
                 id: date;
                 text: parser.itemElement(index,"pubDate");
                 smooth: true;
+                color: "#CC5500";
                 font {
                     pointSize: description.font.pointSize - 1.5;
                 }
             }
 
-            Button {
-                id: installButton;
-                text: qsTr("Try it");
+            Row {
+                id: buttonContainer;
+                spacing: 15;
                 visible: expand;
                 anchors {
                     horizontalCenter: parent.horizontalCenter;
                 }
-                onClicked: {
-                    console.debug("nfc is "+nfc);
-//                    nfc.start(parser.itemElement(index,"link"));
-                    var link = parser.itemElement(index,"link")
-                    Qt.openUrlExternally(link);
+
+                Button {
+                    id: installButton;
+                    width: 160;
+                    text: qsTr("Try it");
+                    anchors.verticalCenter: parent.verticalCenter;
+                    onClicked: {
+                        var link = parser.itemElement(index,"link")
+                        Qt.openUrlExternally(link);
+                    }
+                }
+
+                ToolIcon {
+                    id: share;
+                    anchors.verticalCenter: parent.verticalCenter;
+                    platformIconId: "toolbar-share";
+                    onClicked: {console.debug("share clicked");
+                        var t = title.text;
+                        var l = parser.itemElement(index,"link")
+                        shareui.shareUrl(t,l);
+                    }
                 }
             }
 
             Rectangle {
+                id: line;
                 width: parent.width - 20;
                 height: 3;
+                radius: 1.5;
+                smooth: true;
                 color: "white";
                 anchors {
                     horizontalCenter: parent.horizontalCenter;

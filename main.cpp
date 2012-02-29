@@ -5,17 +5,24 @@
 #include "rssmanager.h"
 #include "rssparser.h"
 #include "NfcMaster.h"
+#if defined(DC_HARMATTAN)
+#include "ShareUi.h"
+#endif
+
+const QString APPNAME("Moko");
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
     QScopedPointer<QApplication> app(createApplication(argc, argv));
-    RSSManager rssMgr;
+    RSSManager rssMgr(APPNAME);
     qmlRegisterType<RSSParser>();
-    NfcMaster nfc;
     QmlApplicationViewer viewer;
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
     viewer.rootContext()->setContextProperty("engine",(QObject*)&rssMgr);
-    viewer.rootContext()->setContextProperty("nfc",(QObject*)&nfc);
+#if defined(DC_HARMATTAN)
+    ShareUi shareui;
+    viewer.rootContext()->setContextProperty("shareui",(QObject*)&shareui);
+#endif
     viewer.setMainQmlFile(QLatin1String("qml/Moko/main.qml"));
     viewer.showExpanded();
     return app->exec();
