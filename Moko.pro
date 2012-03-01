@@ -15,8 +15,9 @@ MOBILITY += connectivity
 CONFIG += qdeclarative-boostable
 
 # The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp \
-    NfcMaster.cpp
+SOURCES += main.cpp
+
+include (../feedparrot/feedparrot.pri)
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -30,18 +31,30 @@ OTHER_FILES += \
     qtc_packaging/debian_harmattan/copyright \
     qtc_packaging/debian_harmattan/control \
     qtc_packaging/debian_harmattan/compat \
-    qtc_packaging/debian_harmattan/changelog
+    qtc_packaging/debian_harmattan/changelog \
+    qtc_packaging/debian_harmattan/prerm \
+    qtc_packaging/debian_harmattan/postinst
 
-include (../feedparrot/feedparrot.pri)
+OTHER_FILES += \
+    com.dreamcode.moko.service \
+    moko.conf
 
 RESOURCES += \
     resources.qrc
-
-HEADERS += \
-    NfcMaster.h
 
 contains(MEEGO_EDITION,harmattan) {
     # share ui setup
     include(../shareui/shareui.pri)
 }
 
+# install d-bus files
+#app_conf.files = moko.conf
+#appp_conf.path = /etc/dbus-1/session.d/
+
+#app_service.files = com.dreamcode.moko.service
+#app_service.path = /usr/share/dbus-1/services/
+
+#INSTALLS += app_conf app_service
+
+# test
+CONFIG += meegotouchevents

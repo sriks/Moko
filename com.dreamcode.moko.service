@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=com.dreamcode.moko
+Exec=/usr/bin/invoker --type=d -s /opt/Moko/bin/Moko
+User=user

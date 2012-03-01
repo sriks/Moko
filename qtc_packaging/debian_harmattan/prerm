@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Dynamic uninstallation of sync-fw plugins is not supported in PR1.0
+# but it can be tried out in any case
+/usr/bin/aegis-exec -s -u user dbus-send --dest=com.meego.msyncd --print-reply /synchronizer com.meego.msyncd.uninstallPlugin string:'mokosync'
+
+# Clean up the feed items published by this application
+/usr/bin/aegis-exec -s -u user dbus-send --dest=com.nokia.home.EventFeed --print-reply /eventfeed com.nokia.home.EventFeed.removeItemsBySourceName string:'mokosync'
+
+# remove feedparrot generated files
+/usr/bin/aegis-exec -s -u rm -rf /home/user/.local/share/data/Moko
+
+# Make sure the uninstallation is always considered successful
+exit 0

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Dynamic installation of sync-fw plugins is not supported in PR1.0
+# but it can be tried out in any case
+/usr/bin/aegis-exec -s -u user dbus-send --dest=com.meego.msyncd --print-reply /synchronizer com.meego.msyncd.installPlugin string:'mokosync'
+#gconftool -s /apps/ControlPanel/History/EnableFeed -t bool true
+/usr/bin/aegis-exec -s -u user dbus-send --dest=com.meego.msyncd --print-reply /synchronizer com.meego.msyncd.startSync string:'mokosync'
+
+# Make sure the installation is always considered successful
+exit 0

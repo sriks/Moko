@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profile name="mokosync" type="sync" >
+   <!--This key is used for display name of the  profile in UI -->
+    <key name="displayname" value="Moko"/>
+    <!--This key is used to tell sync-fw if the profile is enabled or not -->
+    <key name="enabled" value="true" />
+    <!--This key is used if accounts fw is used -->
+    <key name="use_accounts" value="false" />
+    <!--This key is used if profile needs to be hidden in UI -->
+    <key name="hidden" value="true" />
+    <!--This key is used to tell the sync-fw which service to use -->
+    <profile type="service" name="mokosync" >
+    </profile>
+    <!--This is used by sync-fw to set customized scheduling information for the profile -->
+    <!--srikanth: using 12 hr interval -->
+    <schedule enabled="true" interval="720" days="1,2,3,4,5,6,7" syncconfiguretime="" time="">
+    <rush begin="09:00:00" enabled="true" interval="720" end="21:00:00" days="1,2,3,4,5,6,7"/>
+    </schedule>
+</profile>

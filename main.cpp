@@ -1,12 +1,15 @@
 #include <QtGui/QApplication>
 #include <QDeclarativeContext>
 #include <QtDeclarative>
+#include <QDebug>
+#include <QUrl>
 #include "qmlapplicationviewer.h"
 #include "rssmanager.h"
 #include "rssparser.h"
 #include "NfcMaster.h"
 #if defined(DC_HARMATTAN)
 #include "ShareUi.h"
+#include "meventfeed.h"
 #endif
 
 const QString APPNAME("Moko");
