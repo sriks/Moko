@@ -27,6 +27,7 @@ public:
 public slots:
     // From SyncPluginBase
     virtual void connectivityStateChanged( Sync::ConnectivityType aType, bool aState );
+
     virtual void onUpdateAvailable(QUrl url,int newItems);
 private:
     MokoSyncPrivate* d;

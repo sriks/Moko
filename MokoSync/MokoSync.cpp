@@ -49,7 +49,6 @@ MokoSync::MokoSync(const QString& aPluginName,
             Buteo::PluginCbInterface *aCbInterface) :
     Buteo::ClientPlugin(aPluginName,aProfile,aCbInterface) {
     d = new MokoSyncPrivate;
-
 }
 
 MokoSync::~MokoSync() {
@@ -58,17 +57,17 @@ MokoSync::~MokoSync() {
 
 bool MokoSync::startSync() {
     d->writeLog(QString("\nMokoSync::startSync()"));
+    QTimer::singleShot(100,d->rssMgr,SLOT(updateAll()));
     return true;
 }
 
 bool MokoSync::init() {
-    if(!d->rssMgr) {
+    d->writeLog("\ninit()");
+    if(!d->rssMgr)
         d->rssMgr = new RSSManager(APPNAME,this);
-        QObject::connect(d->rssMgr,SIGNAL(updateAvailable(QUrl,int)),
-                         this,SLOT(onUpdateAvailable(QUrl,int)));
-        d->rssMgr->restoreState();
-        d->rssMgr->updateAll();
-    }
+    QObject::connect(d->rssMgr,SIGNAL(updateAvailable(QUrl,int)),
+                     this,SLOT(onUpdateAvailable(QUrl,int)));
+    d->rssMgr->restoreState();
     return true;
 }
 

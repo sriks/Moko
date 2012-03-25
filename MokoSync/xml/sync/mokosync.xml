@@ -12,8 +12,7 @@
     <profile type="service" name="mokosync" >
     </profile>
     <!--This is used by sync-fw to set customized scheduling information for the profile -->
-    <!--srikanth: using 12 hr interval -->
-    <schedule enabled="true" interval="720" days="1,2,3,4,5,6,7" syncconfiguretime="" time="">
-    <rush begin="09:00:00" enabled="true" interval="720" end="21:00:00" days="1,2,3,4,5,6,7"/>
+    <schedule enabled="true" interval="20" days="1,2,3,4,5,6,7" syncconfiguretime="" time="">
+    <rush begin="09:00:00" enabled="true" interval="20" end="21:00:00" days="1,2,3,4,5,6,7"/>
     </schedule>
 </profile>
