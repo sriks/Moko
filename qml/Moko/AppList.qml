@@ -195,7 +195,7 @@ Page {
                 maximumLineCount: (appInfo.expand)?(15):(3);
                 smooth: true;
                 color: appInfo.contentColor;
-                font { pointSize: title.font.pointSize - 2;}
+                font { pointSize: title.font.pointSize - 1;}
                 MouseArea {
                     anchors.fill: parent;
                     onClicked: expand = (expand)?(false):(true);
@@ -235,10 +235,10 @@ Page {
                     id: share;
                     anchors.verticalCenter: parent.verticalCenter;
                     platformIconId: "toolbar-share";
-                    onClicked: {console.debug("share clicked");
+                    onClicked: {
                         var t = title.text;
                         var l = parser.itemElement(index,"link")
-                        shareui.shareUrl(t,l);
+                        shareui.share(t,"",l);
                     }
                 }
             }
