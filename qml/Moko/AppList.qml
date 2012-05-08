@@ -200,6 +200,10 @@ Page {
                     anchors.fill: parent;
                     onClicked: expand = (expand)?(false):(true);
                 }
+
+                Behavior on maximumLineCount {
+                    NumberAnimation { easing.type: Easing.OutQuad; duration: 700 }
+                }
             }
 
             Label {
@@ -215,7 +219,11 @@ Page {
             Row {
                 id: buttonContainer;
                 spacing: 15;
-                visible: expand;
+                opacity: expand;
+                Behavior on opacity {
+                    NumberAnimation { duration: 300 }
+                }
+
                 anchors {
                     horizontalCenter: parent.horizontalCenter;
                 }
