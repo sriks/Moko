@@ -1,3 +1,8 @@
+# Moko UI pro
+# Srikanth Sombhatla
+# srikanthsombhatla@gmail.com
+# Dreamcode 2012
+
 # Add more folders to ship with the application, here
 folder_01.source = qml/Moko
 folder_01.target = qml
@@ -43,18 +48,9 @@ RESOURCES += \
     resources.qrc
 
 contains(MEEGO_EDITION,harmattan) {
+    DEFINES += DC_HARMATTAN
     # share ui setup
     include(../shareui/shareui.pri)
+    CONFIG += meegotouchevents
 }
 
-# install d-bus files
-#app_conf.files = moko.conf
-#appp_conf.path = /etc/dbus-1/session.d/
-
-#app_service.files = com.dreamcode.moko.service
-#app_service.path = /usr/share/dbus-1/services/
-
-#INSTALLS += app_conf app_service
-
-# test
-CONFIG += meegotouchevents
