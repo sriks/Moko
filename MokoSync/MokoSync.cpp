@@ -8,6 +8,7 @@
 #include <meventfeed.h>
 #include "MokoSync.h"
 #include "rssmanager/rssmanager.h"
+// #define MOKOSYNC_LOG_TO_FILE
 
 const QString APPNAME("Moko");
 
@@ -15,23 +16,31 @@ class MokoSyncPrivate {
 public:
     MokoSyncPrivate() {
         rssMgr = NULL;
+#ifdef MOKOSYNC_LOG_TO_FILE
         f = new QFile("/home/user/mokolog.txt");
         if(f->open(QIODevice::Append))
             writeLog(QString("New Log Starts: ") + QDateTime::currentDateTime().toString());
+#endif
     }
 
     ~MokoSyncPrivate() {
         delete rssMgr;
+#ifdef MOKOSYNC_LOG_TO_FILE
         f->close();
         delete f;
+#endif
     }
     void writeLog(QString msg) {
+#ifdef MOKOSYNC_LOG_TO_FILE
         if(f->isOpen())
             f->write(msg.toAscii());
+#endif
     }
 
     RSSManager* rssMgr;
+#ifdef MOKOSYNC_LOG_TO_FILE
     QFile* f;
+#endif
 };
 
 MokoSync* createPlugin(const QString& aPluginName,
