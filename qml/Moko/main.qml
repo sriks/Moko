@@ -66,6 +66,7 @@ PageStackWindow {
 
     QueryDialog {
         id: about
+        icon: "qrc:/Moko80.png";
         titleText: "Moko";
         message: "Conceptualized and developed at Dreamcode, 2012.\nContent courtesy my-meego.com."
         acceptButtonText: "OK";

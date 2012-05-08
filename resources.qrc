@@ -4,5 +4,6 @@
         <file>qml/Moko/main.qml</file>
         <file>qml/Moko/AppWebView.qml</file>
         <file>qml/Moko/MokoUtils.js</file>
+        <file>Moko80.png</file>
     </qresource>
 </RCC>
