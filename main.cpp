@@ -12,7 +12,7 @@
 #include "meventfeed.h"
 #endif
 
-const QString APPNAME("Moko");
+const QString APPNAME("MokoApp");
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
