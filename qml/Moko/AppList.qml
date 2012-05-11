@@ -61,7 +61,9 @@ Page {
         id: error
         width: parent.width;
         visible: false;
+        smooth: true;
         anchors.centerIn: parent;
+        horizontalAlignment: Text.AlignHCenter;
         function clear() {
             text = "";
             visible = false;
